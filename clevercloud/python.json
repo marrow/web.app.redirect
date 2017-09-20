@@ -1,0 +1,5 @@
+{
+	"deploy": {
+		"module": "web.app.redirect.__main__:app"
+	}
+}
