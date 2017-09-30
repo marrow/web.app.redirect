@@ -1,10 +1,17 @@
-import os
+"""The WSGI application entry point.
+
+Relevant environment variables:
+
+PYTHON_OPTIMIZE -- Set this to enable optimizations, reduce logging level, and diable diagnostic aids.
+MONGODB_ADDON_URI -- The mongodb:// URI to use as the primary connection, defaulting to localhost/test.
+PORT -- The port the development server should bind to, defaulting to 8080.
+"""
+
+# Configuration from the environment, ref: http://12factor.net/config
+from os import getenv as ENV
 
 # Get a reference to the Application class.
 from web.core import Application
-
-# Some performance information.
-from web.ext.analytics import AnalyticsExtension
 
 # Simplified data serialization support.
 from web.ext.serialize import SerializationExtension
@@ -15,8 +22,9 @@ from web.ext.db import DBExtension
 # Redirection utilizes a MongoDB database.
 from web.db.mongo import MongoDBConnection
 
-if __debug__:  # Development-time interactive debugger.
-	from web.ext.debug import DebugExtension
+if __debug__:
+	from web.ext.analytics import AnalyticsExtension  # Some performance information.
+	from web.ext.debug import DebugExtension  # Development-time interactive debugger.
 
 # The primary web-exposed entry point.
 from web.app.redirect.root import Redirect
@@ -27,14 +35,16 @@ app = Application(
 		Redirect,
 		
 		extensions = [
-				AnalyticsExtension(),
 				SerializationExtension(),
 				DBExtension(
 						MongoDBConnection(
-								os.environ.get('MONGODB_ADDON_URI', "mongodb://localhost/test")
+								ENV('MONGODB_ADDON_URI', "mongodb://localhost/test")
 							)
 					),
-			] + ([DebugExtension()] if __debug__ else []),
+			] + ([
+				AnalyticsExtension(),
+				DebugExtension()
+			] if __debug__ else []),
 		
 		logging = {
 				'version': 1,
@@ -75,5 +85,5 @@ if __name__ == "__main__":
 	app.serve(
 			'wsgiref' if __debug__ else 'waitress',
 			host = '127.0.0.1' if __debug__ else '0.0.0.0',
-			port = os.environ.get('MONGODB_ADDON_URI', "mongodb://localhost/test")
+			port = int(ENV('PORT', 8080))
 		)
