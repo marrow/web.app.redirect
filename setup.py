@@ -62,15 +62,33 @@ setup(
 		] if {'pytest', 'test', 'ptr'}.intersection(sys.argv) else [],
 	
 	install_requires = [
-			'uri>=2.0.0,<3.0.0',  # Generic URI datastructure.
 			'marrow.package>=1.1.0,<2.0.0',  # Plugin discovery and loading.
 			'marrow.mongo[logger]>=1.1.2,<2.0.0',  # Database Access Object layer.
-			'waitress',  # "Production" quality HTTP server for use with reverse proxies.
-			'web.dispatch.resource',  # URL to endpoint lookup mechanism.
-			'cinje',  # Template engine domain-specific language (DSL).
+			'WebCore>=2.0.0,<3.0.0',  # Underlying web framework.
+			'web.dispatch.resource>=2.0.0,<3.0.0',  # URL to endpoint lookup mechanism.
+			'web.db>=2.0.1,<3.0.0',  # Framework integration for database access.
+			'uri>=2.0.0,<3.0.0',  # Generic URI datastructure.
+			'cinje>=1.1.0,<1.2.0',  # Template engine domain-specific language (DSL).
 		],
 	
 	tests_require = tests_require,
+	
+	extras_require = dict(
+			development = [
+					'WebCore[development]>=2.0.0,<3.0.0',  # Underlying web framework with development dependencies.
+					'pygments>=2.2.0,<2.3.0',  # Syntax highlighting of log output and cinje diagnostics.
+					'waitress>=1.0.0,<1.1.0',  # "Production" quality WSGI HTTP front-end or "web server".
+				],
+			proxy = [  # Reverse proxy production deployments.
+					'waitress>=1.0.0,<1.1.0',
+				],
+			uwsgi = [  # UWSGI production deployments.
+					'uwsgi>=2.0.0,<2.1.0',
+				],
+			fcgi = [  # FastCGI production deployments.
+					'flup6>=1.1.0,<1.2.0',
+				]
+		),
 	
 	entry_points = {
 				'marrow.mongo.document': [  # Document classes registered by name.
