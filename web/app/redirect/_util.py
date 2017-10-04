@@ -4,7 +4,7 @@ Please do not rely on these in your own code as they are subject to breaking cha
 """
 
 class ReverseDNS:
-	def native(self, context, value):
+	def native(self, value, context):
 		return '.'.join(value.split('.')[::-1])
 	
 	foreign = native
