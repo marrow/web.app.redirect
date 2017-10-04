@@ -2,32 +2,23 @@
 
 Relevant environment variables:
 
-PYTHON_OPTIMIZE -- Set this to enable optimizations, reduce logging level, and diable diagnostic aids.
 MONGODB_ADDON_URI -- The mongodb:// URI to use as the primary connection, defaulting to localhost/test.
 PORT -- The port the development server should bind to, defaulting to 8080.
+PYTHON_OPTIMIZE -- Set this to enable optimizations, reduce logging level, and diable diagnostic aids.
 """
 
-# Configuration from the environment, ref: http://12factor.net/config
-from os import getenv as ENV
+from os import getenv as ENV  # Configuration from the environment, ref: http://12factor.net/config
 
-# Get a reference to the Application class.
-from web.core import Application
-
-# Simplified data serialization support.
-from web.ext.serialize import SerializationExtension
-
-# Generalized database adapter support.
-from web.ext.db import DBExtension
-
-# Redirection utilizes a MongoDB database.
-from web.db.mongo import MongoDBConnection
+from web.core import Application  # WebCore WSGI Application base class.
+from web.db.mongo import MongoDBConnection  # Redirection utilizes a MongoDB database.
+from web.ext.analytics import AnalyticsExtension  # Some performance information.
+from web.ext.db import DBExtension  # Generalized database adapter support.
+from web.ext.serialize import SerializationExtension  # Simplified data serialization support.
 
 if __debug__:
-	from web.ext.analytics import AnalyticsExtension  # Some performance information.
 	from web.ext.debug import DebugExtension  # Development-time interactive debugger.
 
-# The primary web-exposed entry point.
-from web.app.redirect.root import Redirect
+from web.app.redirect.root import Redirect  # The primary web-exposed entry point.
 
 
 # This is our WSGI application instance.
@@ -35,6 +26,7 @@ app = Application(
 		Redirect,
 		
 		extensions = [
+				AnalyticsExtension(),
 				SerializationExtension(),
 				DBExtension(
 						MongoDBConnection(
@@ -42,7 +34,6 @@ app = Application(
 							)
 					),
 			] + ([
-				AnalyticsExtension(),
 				DebugExtension()
 			] if __debug__ else []),
 		
