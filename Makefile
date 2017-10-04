@@ -1,7 +1,7 @@
 PROJECT = web.app.redirect
 USE = development
 
-.PHONY: all develop clean veryclean test release
+.PHONY: all develop clean veryclean serve shell test release
 
 all: clean develop test
 
@@ -17,6 +17,14 @@ veryclean: clean
 	pip uninstall -y ${PROJECT}
 	rm -rvf *.egg-info .packaging/*
 	pip freeze | grep '==' | xargs pip uninstall -y
+
+serve: develop
+	@clear
+	@python -m web.app.redirect
+
+shell: develop
+	@clear
+	@python -m web.app.redirect -i
 
 test: develop
 	@clear

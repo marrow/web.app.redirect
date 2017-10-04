@@ -75,7 +75,9 @@ setup(
 	
 	extras_require = dict(
 			development = [
-					'WebCore[development]>=2.0.0,<3.0.0',  # Underlying web framework with development dependencies.
+					'backlash',  # Interactive web-based debugger.
+					'ptipython',  # Command-line enhanced Python REPL.
+					'pudb',  # Borland-esque interactive debugger text mode GUI.
 					'pygments>=2.2.0,<2.3.0',  # Syntax highlighting of log output and cinje diagnostics.
 					'waitress>=1.0.0,<1.1.0',  # "Production" quality WSGI HTTP front-end or "web server".
 				],
