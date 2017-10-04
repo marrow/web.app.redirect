@@ -1,6 +1,6 @@
 from web.dispatch.resource import Resource
 
 
-class Root(Resource):
+class Redirect(Resource):
 	def get(self):
 		return "OK"
